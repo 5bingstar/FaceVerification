@@ -10,7 +10,7 @@ class LBP:
     def __init__(self, input_file, count, radius, lBlock, rBlock):
         self.image = cv2.imread(input_file.encode('gbk'), 0)
         h, w = self.image.shape
-        self.image = self.image[h/2 - 25: h/2 + 25, w/2 - 25: w/2 + 25] # pick up 50*50 in center
+        #self.image = self.image[h/2 - 25: h/2 + 25, w/2 - 25: w/2 + 25] # pick up 50*50 in center
         self.count = count
         self.radius = radius
         self.lBlock = lBlock
