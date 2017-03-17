@@ -1,35 +1,29 @@
 #!/urs/bin/env python2
 
+from feature import *
 import numpy as np
 import math
 
 class AdaBoost:
-    def __init__(self, pdata, ndata, test_data):
+    def __init__(self):
         self.pfeatures = None
         self.nfeatures = None
+        self.test_features = None
+        
 
-        # data
-        self.pdata = pdata
-        self.ndata = ndata
-        self.test_data = test_data
-
-        #self.test_data = test_data
         self.T = 10
-        self.D = 0
+        self.D = None
 
         # trained parameters
         self.alphas = []
         self.dimensions = []
         self.thresholds = []
         # tested 
-        self.test_features = None
         self.test_results = []
     
     def seed_features(self):
-        #if len(self.features) == 0:
-        #    self.features = feature.get_feature(self.data)
-        self.pfeatures = self.pdata
-        self.nfeatures = self.ndata
+        if len(self.features) == 0:
+            self.pfeatures, self.nfeatures, self.test_features = feature.get_feature()
         self.pnums, self.D = self.pfeatures.shape
         self.nnums, self.D = self.nfeatures.shape
     
