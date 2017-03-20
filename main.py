@@ -2,11 +2,10 @@
 
 import os 
 import sys
-from LBP import *
-
-data_path = 'data/lfw-deepfunneled/'
+from adaboost import AdaBoost
 
 if __name__ == "__main__":
-    run = LBP(data_path + 'Zhang_Ziyi/Zhang_Ziyi_0001.jpg', 8, 2, 7, 5)
-    run.execute()
-    run.output_lbp()
+    run = AdaBoost()
+    run.seed_features()
+    run._train_iteration()
+    run._test_iteration()
