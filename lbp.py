@@ -9,8 +9,8 @@ from skimage.feature import local_binary_pattern
 class LBP:
     def __init__(self, input_file):
         self.image = cv2.imread(input_file.encode('gbk'), 0)
-        h, w = self.image.shape
-        self.image = self.image[h/2 - 25: h/2 + 25, w/2 - 25: w/2 + 25] # pick up 50*50 in center
+        #h, w = self.image.shape
+        #self.image = self.image[h/2 - 25: h/2 + 25, w/2 - 25: w/2 + 25] # pick up 50*50 in center
         self.histogram = []
         
     def _lbp(self, count, radius):
@@ -37,7 +37,6 @@ class LBP:
             lbp = self._lbp(i[0], i[1])
             for j in s2:
                 self.histogram += self._histogram(lbp, j[0], j[1], i[0]).tolist()
-                #print type(self._histogram(lbp, j[0], j[1], i[0]))
         return self.histogram
 '''
     def output_feature(self):
