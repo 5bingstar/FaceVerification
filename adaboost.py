@@ -1,6 +1,6 @@
 #!/urs/bin/env python2
 
-from feature import *
+import feature
 import numpy as np
 import math
 
@@ -10,10 +10,10 @@ class AdaBoost:
         self.nfeatures = None
         self.test_features = None
         
-
         self.T = 10
         self.D = None
-
+        self.pnums = 0
+        self.nnums = 0
         # trained parameters
         self.alphas = []
         self.dimensions = []
@@ -22,10 +22,10 @@ class AdaBoost:
         self.test_results = []
     
     def seed_features(self):
-        if len(self.features) == 0:
-            self.pfeatures, self.nfeatures, self.test_features = feature.get_feature()
-        self.pnums, self.D = self.pfeatures.shape
-        self.nnums, self.D = self.nfeatures.shape
+        self.pfeatures, self.nfeatures, self.test_features = feature.get_feature()
+        self.pnums = len(self.pfeatures)
+        self.D = len(self.pfeatures[0])
+        self.nnums = len(self.nfeatures)
     
     def weak_classifier(self, z, ru):
         if z <= ru:
@@ -39,6 +39,7 @@ class AdaBoost:
 
         for i in range(self.T):
             dim, beta, ru = self.WeightedThresholdClassifier(pweights, nweights)
+            print "beta = %f" %beta
             self.dimensions.append(dim)
             self.thresholds.append(ru)
             for j in range(self.pnums):
@@ -47,23 +48,29 @@ class AdaBoost:
             for j in range(self.nnums):
                 if self.nfeatures[j][dim] > ru:
                     nweights[j] *= beta
+            normalize = sum(pweights) + sum(nweights)
+            pweights = [x/normalize for x in pweights]
+            nweights = [x/normalize for x in nweights]
             if beta == 0:
                 self.alphas.append(10)
             else:
                 self.alphas.append(math.log(1/beta))
+        print self.alphas
+        print self.dimensions
+        print self.thresholds
     
     def _test_iteration(self):
         #self.test_features = feature.get_features(self.test_data)
-        self.test_features = self.test_data
         for item in self.test_features:
             score = 0
             for i in range(self.T):
-                score += self.alphas[i] * self.weak_classifier(self.dimensions[i], self.thresholds[i])
+                score += self.alphas[i] * self.weak_classifier(item[self.dimensions[i]], self.thresholds[i])
             if score > 0:
                 self.test_results.append(1)
             else:
                 self.test_results.append(-1)
         print self.test_results
+        return self.test_results
         
     def WeightedThresholdClassifier(self, pweights, nweights):
         dim = 0
@@ -85,7 +92,7 @@ class AdaBoost:
                     Min0 = self.nfeatures[t][i]
                 if self.nfeatures[t][i] > Max0:
                     Max0 = self.nfeatures[t][i]
-            if Max1 <= Min0:
+            if Max1 < Min0:
                 return i, 0, Max1
             else:
                 possible_ru = []
@@ -99,6 +106,7 @@ class AdaBoost:
                     if s >= Min0 and s <= Max1:
                         if s not in possible_ru:
                             possible_ru.append(s)
+                #print possible_ru
                 for r in possible_ru:
                     eps = 0
                     for t in range(self.pnums):
@@ -111,6 +119,6 @@ class AdaBoost:
                         ru = r
                         dim = i
                         beta = eps / (1 - eps)
-        print dim, beta, ru
+        print min_eps
         return dim, beta, ru
 
