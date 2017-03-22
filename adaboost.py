@@ -1,7 +1,6 @@
 #!/urs/bin/env python2
 
 import os
-import feature
 import numpy as np
 import math
 from config import *
@@ -28,13 +27,11 @@ class AdaBoost:
             self.pfeatures = np.loadtxt(data_path + 'pfeature.csv', delimiter = ',', skiprows=0).tolist()
         if os.path.exists(data_path + 'nfeature.csv'):
             self.nfeatures = np.loadtxt(data_path + 'nfeature.csv', delimiter = ',', skiprows=0).tolist()
-        if os.path.exists(data_path + 'test_feature.csv'):
-            self.test_features = np.loadtxt(data_path + 'test_feature.csv', delimiter = ',', skiprows=0).tolist()
         else:
-            self.pfeatures, self.nfeatures, self.test_features = feature.get_feature()
+            import feature
+            self.pfeatures, self.nfeatures = feature.get_train_features()
             np.savetxt(data_path + 'pfeature.csv', self.pfeatures, delimiter = ',')
             np.savetxt(data_path + 'nfeature.csv', self.nfeatures, delimiter = ',')
-            np.savetxt(data_path + 'test_feature.csv', self.test_features, delimiter = ',')
 
         self.pnums = len(self.pfeatures)
         self.D = len(self.pfeatures[0])
@@ -73,7 +70,12 @@ class AdaBoost:
             print "choose alpha=%f" %self.alphas[-1]
     
     def _test_iteration(self):
-        #self.test_features = feature.get_features(self.test_data)
+        if os.path.exists(data_path + 'test_feature.csv'):
+            self.test_features = np.loadtxt(data_path + 'test_feature.csv', delimiter = ',', skiprows=0).tolist()
+        else:
+            import feature
+            self.test_features = feature.get_test_features()
+            np.savetxt(data_path + 'test_feature.csv', self.test_features, delimiter = ',')
         for item in self.test_features:
             score = 0
             for i in range(self.T):
