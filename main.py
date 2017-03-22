@@ -9,3 +9,4 @@ if __name__ == "__main__":
     run.seed_features()
     run._train_iteration()
     run._test_iteration()
+    run._save_result()

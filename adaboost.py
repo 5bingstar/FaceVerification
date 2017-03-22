@@ -1,8 +1,10 @@
 #!/urs/bin/env python2
 
+import os
 import feature
 import numpy as np
 import math
+from config import *
 
 class AdaBoost:
     def __init__(self):
@@ -22,7 +24,18 @@ class AdaBoost:
         self.test_results = []
     
     def seed_features(self):
-        self.pfeatures, self.nfeatures, self.test_features = feature.get_feature()
+        if os.path.exists(data_path + 'pfeature.csv'):
+            self.pfeatures = np.loadtxt(data_path + 'pfeature.csv', delimiter = ',', skiprows=0).tolist()
+        if os.path.exists(data_path + 'nfeature.csv'):
+            self.nfeatures = np.loadtxt(data_path + 'nfeature.csv', delimiter = ',', skiprows=0).tolist()
+        if os.path.exists(data_path + 'test_feature.csv'):
+            self.test_features = np.loadtxt(data_path + 'test_feature.csv', delimiter = ',', skiprows=0).tolist()
+        else:
+            self.pfeatures, self.nfeatures, self.test_features = feature.get_feature()
+            np.savetxt(data_path + 'pfeature.csv', self.pfeatures, delimiter = ',')
+            np.savetxt(data_path + 'nfeature.csv', self.nfeatures, delimiter = ',')
+            np.savetxt(data_path + 'test_feature.csv', self.test_features, delimiter = ',')
+
         self.pnums = len(self.pfeatures)
         self.D = len(self.pfeatures[0])
         self.nnums = len(self.nfeatures)

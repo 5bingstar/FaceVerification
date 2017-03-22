@@ -11,28 +11,27 @@ def get_lbp(File):
 
 def get_feature():
     ppair, npair, test_pair = get_train_test()
+    print "Prepare positive features..."
     pfeatures = []
-    for p in ppair[:10]: ##
+    for p in ppair: ##
         pf1 = get_lbp(p[0])
         pf2 = get_lbp(p[1])
         feature = [calculate_distance(pf1[i], pf2[i]) for i in range(len(pf1))]
-        print feature[:10]
         pfeatures.append(feature)
+    print "Prepare negative features..."
     nfeatures = []
-    for n in npair[:10]: ##
+    for n in npair: ##
         nf1 = get_lbp(n[0])
         nf2 = get_lbp(n[1])
         feature = [calculate_distance(nf1[i], nf2[i]) for i in range(len(nf1))]
-        print feature[:10]
         nfeatures.append(feature)
+    print "Prepare testing features..."
     test_features = []
-    for p in test_pair[:10]: ## 
+    for p in test_pair: ## 
         pf1 = get_lbp(p[0])
         pf2 = get_lbp(p[1])
         feature = [calculate_distance(pf1[i], pf2[i]) for i in range(len(pf1))]
         test_features.append(feature)
-    #print len(pfeatures)
-    #print len(pfeatures[0])
     return pfeatures, nfeatures, test_features
 
 def calculate_distance(x, y):
